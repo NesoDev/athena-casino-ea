@@ -1,2 +1,2 @@
 # bot-roobet
-A bot scraper for extracting game results from a casino platform and sharing them with a Telegram group for use by other bots owned by Telegram.
+Un bot scraper para extraer resultados de juegos de una plataforma de casino y compartirlos con un grupo de Telegram para su uso por otros bots propiedad de Telegram.
