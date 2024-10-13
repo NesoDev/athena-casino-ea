@@ -35,9 +35,14 @@ RUN python -m venv /env
 ENV PATH="/env/bin:$PATH"
 
 # define variables de entorno
-ENV DATA_CASINOS='{"roobet": {"name": "Roobet", "url": "https://roobet.com", "games": [{"name": "Lightning Roulette", "game_url": "https://roobet.com/game/evolution:lightning_roulette", "login_url": "https://roobet.com/game/evolution:lightning_roulette?modal=auth&tab=login"}], "account": {"username": "diegoafarrua", "password": "N36root654$$"}}}'
-
-ENV DATA_DRIVERS='[{"name": "Chrome", "path": "/usr/bin/chromedriver", "options": ["--headless", "--disable-gpu"]}]'
+ENV DATA_PLATFORMS='{"roobet": {"name": "Roobet", "url": "https://roobet.com", "url_games": { "lightning_roulette": "https://roobet.com/game/evolution:lightning_roulette" }, "account": {"username": "diegoafarrua", "password": "N36root654$$"}}}'
+ENV DATA_DRIVERS='{"chrome": {"path": "/usr/bin/chromedriver", "options": ["--headless", "--disable-gpu"]}}'
+ENV DATA_CONNECTORS='{"telegram":{"endpoint": "https://api.telegram.org/bot"}, "token": "7500841529:AAGvLC_SjJffNOP5gVO_LDWnocM0TyBixDY", "chat_id": "-4563626142"}'
+ENV USER_MONGODB='everavendano'
+ENV PASSWORD_MONGODB='Galaxyj2prime123'
+ENV CLUSTER='casinobot.w7hs8.mongodb.net'
+ENV DATABASE='CasinoBot'
+ENV URI_MONGODB='mongodb+srv://${USER_MONGODB}:${PASSWORD_MONGODB}@${CLUSTER}/${DATABASE}?retryWrites=true&w=majority'
 
 # copia e instala dependencias del entorno virtual
 COPY requirements.txt . 
