@@ -1,5 +1,5 @@
 from datetime import datetime
-from database.mongodb_client import MongoClient
+from database.mongodb_client import Mongo
 
 def obtain_zone(number: int) -> int:
     if number == 0:
@@ -14,14 +14,14 @@ def obtain_zone(number: int) -> int:
 def is_equal_zones(numbers: list) -> bool:
     if not numbers:
         return False
-    zone = obtain_zone(numbers[0])
+    zone = obtain_zone(int(numbers[0]))
     for number in numbers[1:]:
-        if obtain_zone(number) != zone:
+        if obtain_zone(int(number)) != zone:
             return False    
     return True
 
-def obtain_others_zones(number:int) -> int:
-    zone = obtain_zone(number)
+def obtain_others_zones(number) -> int:
+    zone = obtain_zone(int(number))
     match(zone):
         case 0:
             return [1, 2, 3]
@@ -40,7 +40,7 @@ def zones_list_to_string(zones: list) -> str:
         return quoted_zones[0]
     return ', '.join(quoted_zones[:-1]) + ' y ' + quoted_zones[-1]
     
-def obtain_latest_message_by_strategyId(client: MongoClient, db_name: str, strategyId: str):
+def obtain_latest_message_by_strategyId(client: Mongo, db_name: str, strategyId: str):
     client.select_database(db_name)
     messages = client.get_collection("messages")
     latest_document = messages.find_one(
@@ -49,27 +49,27 @@ def obtain_latest_message_by_strategyId(client: MongoClient, db_name: str, strat
     )
     return latest_document if latest_document else None
 
-def obtain_latest_message(client:MongoClient, db_name:str):
+def obtain_latest_message(client:Mongo, db_name:str):
     client.select_database(db_name)
-    messages = client.get_collection("messages")
+    messages = client.get_collection("Messages")
     last_message = messages.find_one(sort=[("date", -1)])
-    return last_message if last_message else None
+    return last_message if last_message is not None else None
 
-def create_new_message(client: MongoClient, db_name: str, game_id: str, strategy_id: str, date_Time: datetime, message: str):
+def create_new_message(client: Mongo, db_name: str, game_id: str, strategy_id: str, date_Time: datetime, message: str):
     new_message = {
         "game_id": game_id,
         "strategy_id": strategy_id,
         "content": message,
         "date": date_Time,
-        "socialsId": { "telegram": "0"} 
+        "socialsId": { "telegram": "62"} 
     }
-    last_message=obtain_latest_message(client=client, db_name=db_name)
-    if (last_message != None):
-        last_socialsId=last_message["socialsId"]
-        sociaslId = {}
-        for social, id in last_socialsId.items():
-            sociaslId[social] = str(int(id) + 1)
-        new_message["socialsId"] = sociaslId
+    last_message = obtain_latest_message(client, db_name)
+    if last_message is not None:
+        last_socialsId = last_message["socialsId"]
+        new_socialsId = {
+            social: str(int(id) + 1) for social, id in last_socialsId.items()
+        }
+        new_message["socialsId"] = new_socialsId
     return new_message
         
 def obtain_datetime():

@@ -1,10 +1,12 @@
 from drivers.abstract_driver import Driver
-from selenium import webdriver  # type:ignore
-from selenium.webdriver.chrome.service import Service as ChromeService  # type:ignore
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from src.config.settings import load_env_variable
 
 class Chrome(Driver):
-    def __init__(self, data):
-        super().__init__(data)
+    def __init__(self):
+        data_chrome = load_env_variable('DATA_DRIVERS')['chrome']
+        super().__init__(data_chrome)
         self._driver = None
         self._initialize()
 

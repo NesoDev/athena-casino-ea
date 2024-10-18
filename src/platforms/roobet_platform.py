@@ -1,14 +1,17 @@
-from functions.lightning_roulette.scrap_functions import get_submit_button
-from selenium.webdriver.support.ui import WebDriverWait  # type:ignore
-from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException # type:ignore
-from selenium.webdriver.common.by import By  # type:ignore
+from core.lightning_roulette.scrap_functions import get_submit_button
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 from platforms.abstract_platform import Platform
 import time
+from src.config.settings import load_env_variable
 
 class Roobet(Platform):
-    def __init__(self, driver, data):
-        super().__init__(driver, data)
-        self._platform_data = self.data['roobet']
+    def __init__(self, driver):
+        data_roobet = load_env_variable('DATA_PLATFORMS')['roobet']
+        super().__init__(driver, data_roobet)
+        self._platform_data = self._data['roobet']
         self._url = self._platform_data['url']
         self._account = self._platform_data['account']
         self._username = self._account['username']
@@ -65,7 +68,7 @@ class Roobet(Platform):
         password_input.send_keys(password)
     
     def submit_form(self, driver):
-        submit_button = self.get_submit_button(driver, self.driver.find_element(By.ID, "auth-dialog-username"), 10)
+        submit_button = get_submit_button(driver, self.driver.find_element(By.ID, "auth-dialog-username"), 10)
         submit_button.click()
             
     def refresh(self):
