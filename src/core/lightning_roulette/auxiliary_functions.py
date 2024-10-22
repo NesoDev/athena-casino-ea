@@ -1,5 +1,5 @@
 from datetime import datetime
-from database.mongodb_client import Mongo
+from clients.mongodb_client import Mongo
 
 def obtain_zone(number: int) -> int:
     if number == 0:
@@ -121,3 +121,6 @@ def is_equal_group(numbers: list):
         if obtain_group(int(number)) != group:
             return False
     return True
+
+def create_str_alert(base: str, entity: str, value: str):
+    return base + entity + value

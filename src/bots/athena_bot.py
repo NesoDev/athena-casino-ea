@@ -1,12 +1,12 @@
-from drivers.chrome_driver import Chrome
+from drivers.firefox_driver import Firefox
 from platforms.roobet_platform import Roobet
 from connectors.telegram_connector import Telegram
-from database.mongodb_client import Mongo
+from clients.mongodb_client import Mongo
 from games.lightning_roulette import LightningRoulette
 
 class BotLigthningRoulette:
     def __init__(self):
-        driver = Chrome()
+        driver = Firefox()
         platform = Roobet(driver)
         connector = Telegram()
         client = Mongo()

@@ -4,7 +4,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 import time
 
-def get_submit_button(driver, input_element, delay):
+def get_submit_button(driver, input_element, delay: 0.1):
     while True:
         try:
             print("[SCRAPPER] Buscando 'botón enviar credenciales'.")
@@ -19,15 +19,14 @@ def get_submit_button(driver, input_element, delay):
             print("[SCRAPPER] Retornando 'botón enviar credenciales' encontrado.")
             return submit_button
         except (NoSuchElementException, StaleElementReferenceException) as e:
-            print("[ERROR] 'Botón enviar credenciales' no se encontró. Reintentando en {delay} segundos...")
+            print(f"[ERROR] 'Botón enviar credenciales' no se encontró. Reintentando en {delay} segundos...")
             time.sleep(delay)
 
-def get_stats_button(driver, delay):
+def get_stats_button(driver, delay: 0.1):
     while True:
         try:
             print("[SCRAPPER] Buscando 'botón estadísticas'.")
             css_sp0pf4 = driver.find_element(By.CLASS_NAME, "css-sp0pf4")
-            html = css_sp0pf4.get_attribute('outerHTML')
             first_iframe = css_sp0pf4.find_element(By.TAG_NAME, "iframe")
             driver.switch_to.frame(first_iframe)
             second_iframe = driver.find_element(By.TAG_NAME, "iframe")
@@ -45,12 +44,12 @@ def get_stats_button(driver, delay):
             stats_button = first_item_wrapper_7891b_right_ac8e8.find_elements(By.XPATH, "./*")[1]
             print("[SCRAPPER] Retornando 'botón estadísticas' encontrado.")
             return stats_button
-        except (NoSuchElementException, StaleElementReferenceException) as e:
+        except (NoSuchElementException, StaleElementReferenceException, IndexError) as e:
             driver.switch_to.default_content()
             print(f"[ERROR] 'Botón estadísticas' no se encontró. Reintentando en {delay} segundos...")
             time.sleep(delay)
 
-def get_data(driver, delay):
+def get_data(driver, delay:0.1):
     while True:
         try:
             print("[SCRAPPER] Extrayendo resultados'.")
@@ -94,4 +93,32 @@ def get_data(driver, delay):
         except (NoSuchElementException, StaleElementReferenceException, IndexError) as e:
             driver.switch_to.default_content()
             print(f"[ERROR] Extracción de datos falló. Reintentando en {delay} segundos...")
+            time.sleep(delay)
+
+def check_session_expired(driver, delay: 0.1):
+    while True:
+        try:
+            print("[SCRAPPER] Revisando si la sesión ha expirado.")
+            css_sp0pf4 = driver.find_element(By.CLASS_NAME, "css-sp0pf4")
+            first_iframe = css_sp0pf4.find_element(By.TAG_NAME, "iframe")
+            driver.switch_to.frame(first_iframe)
+            second_iframe = driver.find_element(By.TAG_NAME, "iframe")
+            driver.switch_to.frame(second_iframe)
+            third_iframe = driver.find_element(By.TAG_NAME, "iframe")
+            driver.switch_to.frame(third_iframe)
+            root_element = driver.find_element(By.ID, "root")
+            first_app_7c603 = root_element.find_element(By.XPATH, "./*")
+            first_container_55875 = first_app_7c603.find_element(By.XPATH, "./*")
+            second_content_6d02a = first_container_55875.find_elements(By.XPATH, "./*")[1]
+            eleventh_popup_container_140f0 = second_content_6d02a.find_elements(By.XPATH, "./*")[11]
+            class_eleventh_popup_container_140f0 = eleventh_popup_container_140f0.get_attribute("class")
+            driver.switch_to.default_content()
+            print("[SCRAPPER] Retornando resultado de la revisión de sesión expirada.")
+            if  class_eleventh_popup_container_140f0 == "popupContainer--140f0 blocking--0ef8a highestPriority--13a6e":
+                return True
+            return False
+        except (NoSuchElementException, StaleElementReferenceException, IndexError) as e:
+            driver.switch_to.default_content()
+            #print(f"[INFO] Números no obtenidos. Reintentando en {delay} segundos...")
+            print(f"[ERROR] Verificación de sesión expirada falló. Reintentando en {delay} segundos...")
             time.sleep(delay)

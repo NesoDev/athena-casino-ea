@@ -18,58 +18,61 @@ class Roobet(Platform):
         self._password = self._account['password']
         self._url_games = self._platform_data['url_games']
         
-    def get_driver(self):
-        return self.driver
-        
-    def get_platform_data(self):
-        return self._platform_data
-
-    def get_url(self):
-        return self._url
-
-    def get_account(self):
-        return self._account
-
-    def get_username(self):
-        return self._username
-
-    def get_password(self):
-        return self._password
-
-    def get_url_games(self):
-        return self._url_games
-
     def login(self):
-        driver = self.driver
-        url = self.get_url()
-        driver.get(url)
+        # Recuperamos el driver
+        driver = self._driver
+        # Nos dirigimos al url login
+        driver.get(self._url)
+        # Recuperamos las credenciales
         username = self.get_username()
         password = self.get_password()
-        attempts = 3
-        delay = 10
-        for attempt in range(attempts):
-            try:
-                time.sleep(delay)
-                self.enter_credentials(username, password)
-                self.submit_form(driver)
-                return
-            except (NoSuchElementException, StaleElementReferenceException) as e:
-                print(f"[INFO] Error en el intento {attempt + 1}. Reintentando en {delay} segundos...")
-                if attempt == attempts - 1:
-                    print("[ERROR] Se han agotado los intentos. Intentando de nuevo después de 2 minutos...")
-                    time.sleep(120)
-                    attempts = 3
+        delay_refresh = 180 # 3 minutos
+        while True:
+            # Ingresamos las credenciales
+            self.enter_credentials(username, password)
+            # Enviamos las credenciales
+            self.submit_form(driver)
+            # Verificamos la presencia de un captcha luego de 10 segundos
+            present_captcha = self.check_captcha(driver=self._driver, delay_work=10)
+            # Si hay un captcha esperamos 3 minutos, luego refrescamos la página
+            if present_captcha:
+                time.sleep(delay_refresh)
+                self._driver.refresh()
+                continue
+            # Si no hay captcha, rompemos el bucle
+            break
     
-    def enter_credentials(self, username, password):
-        driver = self.driver
-        username_input = WebDriverWait(driver, 40).until(EC.presence_of_element_located((By.ID, "auth-dialog-username")))
-        password_input = WebDriverWait(driver, 40).until(EC.presence_of_element_located((By.ID, "auth-dialog-current-password")))
-        username_input.send_keys(username)
-        password_input.send_keys(password)
+    def enter_credentials(self, username, password, delay=0.1):
+        while True:
+            try:
+                print("[SCRAPPER] Ingresando credenciales.")
+                username_input = WebDriverWait(self.driver, 40).until(EC.presence_of_element_located((By.ID, "auth-dialog-username")))
+                password_input = WebDriverWait(self.driver, 40).until(EC.presence_of_element_located((By.ID, "auth-dialog-current-password")))
+                username_input.send_keys(username)
+                password_input.send_keys(password)
+            except (NoSuchElementException, StaleElementReferenceException) as e:
+                print(f"[ERROR] El ingreso de credenciales falló. Reintentando en {delay} segundos...")
+                time.sleep(delay)
     
     def submit_form(self, driver):
         submit_button = get_submit_button(driver, self.driver.find_element(By.ID, "auth-dialog-username"), 10)
         submit_button.click()
+
+    def check_captcha(driver, delay: 0.1, delay_work):
+        time.sleep(delay_work)
+        while True:
+            try:
+                print("[SCRAPPER] Verificando la presencia de un captcha.")
+                captcha_container = driver.find_elements(By.XPATH, "./*")[-1]
+                style_captcha_container = captcha_container.get_attribute("style")
+                visibility_captcha_container = style_captcha_container.split("visibility:")[-1].split(";")[0].strip()
+                print("[SCRAPPER] Retornando resultado de la verificación de la presencia de un captcha.")
+                if visibility_captcha_container == "visible":
+                    return True
+                return False
+            except (NoSuchElementException, StaleElementReferenceException, IndexError) as e:
+                print(f"[ERROR] La verificación de la presencia de un captcha falló. Reintentando en {delay} segundos...")
+                time.sleep(delay)
             
     def refresh(self):
         driver = self.driver
