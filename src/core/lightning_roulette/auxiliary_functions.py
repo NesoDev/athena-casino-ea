@@ -1,5 +1,5 @@
 from datetime import datetime
-from clients.mongodb_client import Mongo
+from src.clients.mongodb_client import Mongo
 
 def obtain_zone(number: int) -> int:
     if number == 0:
@@ -20,29 +20,22 @@ def is_equal_zones(numbers: list) -> bool:
             return False    
     return True
 
-def obtain_others_zones(number) -> int:
-    zone = obtain_zone(int(number))
-    match(zone):
-        case 0:
-            return [1, 2, 3]
-        case 1:
-            return [2, 3]
-        case 2:
-            return [1, 3]
-        case 3:
-            return [1, 2]
+def obtain_others_zones(zones: list) -> list:
+    all_zones = {1, 2, 3}
+    remaining_zones = all_zones - set(zones)
+    return list(remaining_zones)
         
 def zones_list_to_string(zones: list) -> str:
     if not zones:
         return ""
-    quoted_zones = [f'"{zone}"' for zone in zones]
+    quoted_zones = [f'{zone}' for zone in zones]
     if len(quoted_zones) == 1:
         return quoted_zones[0]
-    return ', '.join(quoted_zones[:-1]) + ' y ' + quoted_zones[-1]
+    return ', '.join(quoted_zones[:-1]) + ' & ' + quoted_zones[-1]
     
 def obtain_latest_message_by_strategyId(client: Mongo, db_name: str, strategyId: str):
     client.select_database(db_name)
-    messages = client.get_collection("messages")
+    messages = client.get_collection("Messages")
     latest_document = messages.find_one(
         {"strategyId": strategyId},
         sort=[("date", -1)]
@@ -52,36 +45,42 @@ def obtain_latest_message_by_strategyId(client: Mongo, db_name: str, strategyId:
 def obtain_latest_message(client:Mongo, db_name:str):
     client.select_database(db_name)
     messages = client.get_collection("Messages")
+    
+    #print(f"[DEBUG] Collection Messages: {messages}")
     last_message = messages.find_one(sort=[("date", -1)])
+    
+    #print(f"[DEBUG] LastMessage: {last_message}")
     return last_message if last_message is not None else None
 
-def create_new_message(client: Mongo, db_name: str, game_id: str, strategy_id: str, date_Time: datetime, message: str):
+def obtain_datetime():
+    return datetime.now()
+
+def create_new_message(client: Mongo, db_name: str, game_id: str, strategy_id: str, message: str):
     new_message = {
         "game_id": game_id,
         "strategy_id": strategy_id,
         "content": message,
-        "date": date_Time,
+        "date": obtain_datetime(),
         "socialsId": { "telegram": "62"} 
     }
     last_message = obtain_latest_message(client, db_name)
+    
     if last_message is not None:
         last_socialsId = last_message["socialsId"]
         new_socialsId = {
             social: str(int(id) + 1) for social, id in last_socialsId.items()
         }
         new_message["socialsId"] = new_socialsId
+
     return new_message
-        
-def obtain_datetime():
-    return datetime.now()
 
 def obtain_color(number: int):
     reds = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
-    blacks = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31,33, 35]
+    whites = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31,33, 35]
     if number in reds:
         color = "red"
-    elif number in blacks:
-        color = "black"
+    elif number in whites:
+        color = "white"
     elif number == 0:
         color = "neutral"  
     return color
@@ -121,6 +120,3 @@ def is_equal_group(numbers: list):
         if obtain_group(int(number)) != group:
             return False
     return True
-
-def create_str_alert(base: str, entity: str, value: str):
-    return base + entity + value
