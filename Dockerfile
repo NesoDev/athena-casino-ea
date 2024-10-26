@@ -1,41 +1,38 @@
-# syntax=docker/dockerfile
-
 # Usa la imagen oficial de Python
-FROM python:3.9-slim
+FROM python:3.10
 
-# Actualiza dependencias y prepara herramientas necesarias
-RUN apt-get update && apt-get install -y \
-    wget \
-    unzip \
-    && rm -rf /var/lib/apt/lists/*
-
-# Instala Google Chrome
-# RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-
-# Instala Firefox
-RUN apt-get update && apt-get install -y \
-    firefox-esr \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copia requirements.txt ANTES de copiar el código completo
-COPY requirements.txt /tmp/
-
-# Crea el entorno virtual y usa pip para instalar dependencias
-RUN python -m venv /env && \
-    /env/bin/pip install --no-cache-dir -r /tmp/requirements.txt
-
-# Define la ruta del entorno virtual en el PATH
-ENV PATH="/env/bin:$PATH"
-
-# Copia el resto de la aplicación
-COPY . /app
+# ------------------------
+# Configuración de la aplicación
+# ------------------------
 WORKDIR /app
+COPY . /app
 
-# Define variables de entorno necesarias para tu aplicación
-ENV DATA_PLATFORMS='{"roobet": {"name": "Roobet", "url": "https://roobet.com/?modal=auth&tab=login", "url_games": { "lightning_roulette": "https://roobet.com/game/evolution:lightning_roulette" }, "account": {"username": "diegoafarrua", "password": "N36root654$$"}}}'
-ENV DATA_DRIVERS='{"options": ["--headless", "--disable-gpu"]}'
-ENV DATA_CONNECTORS='{"telegram": {"endpoint": "https://api.telegram.org/bot", "token": "7907522262:AAGGKCnG93huWYN9UPvd_IqW7qF3rmaGKUY", "chat_id": "-1002467157850"}}'
-ENV DATA_CLIENTS='{"mongodb": { "uri": "mongodb+srv://everavendano:Galaxyj2prime123@casinobot.w7hs8.mongodb.net/CasinoBot?retryWrites=true&w=majority"}}'
+# Establece el PYTHONPATH para la aplicación
+ENV PYTHONPATH="/app/src"
 
+# ------------------------
+# Creación del entorno virtual
+# ------------------------
+RUN pip install --trusted-host pypi.python.org -r requirements.txt
+
+# ------------------------
+# Instalación de dependencias
+# ------------------------
+RUN apt-get update && apt-get install -y wget unzip && \
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    apt install -y ./google-chrome-stable_current_amd64.deb && \
+    rm google-chrome-stable_current_amd64.deb && \
+    apt-get clean
+
+# ------------------------
+# Definimos las variables de entorno
+# ------------------------
+ENV PATH="/env/bin:$PATH"
+ENV DATA_PLATFORMS='{"roobet": {"name": "Roobet", "url": "https://roobet.com/?modal=auth&tab=login", "url_games": {"lightning_roulette": "https://roobet.com/game/evolution:lightning_roulette?modal=auth&tab=login"}, "account": {"username": "diegoaferrua", "password": "N36root654$$"}}}'
+ENV DATA_CLIENTS='{"mongodb": {"uri": "mongodb+srv://everavendano:Galaxyj2prime123@casinobot.w7hs8.mongodb.net/CasinoBot?retryWrites=true&w=majority"}}'
+ENV DATA_CONNECTORS='{"telegram": {"endpoint": "https://api.telegram.org/bot", "bots": {"en": {"token": "7824866804:AAHmjFJFJDjJldP1ahKt6gYe2IT89V0VIVY", "username": "athenas_en_bot", "chat_id": "-4594636328"}, "es": {"token": "7907522262:AAGGKCnG93huWYN9UPvd_IqW7qF3rmaGKUY", "username": "nesos0_bot", "chat_id": "-4585652451"}, "fr": {"token": "7508380116:AAFsE8avSNGN_lD0nXceHP0H-rPvO7YQN1g", "username": "athenas_fr_bot", "chat_id": "-4580092366"}}}}'
+
+# ------------------------
 # Comando para ejecutar la aplicación
-CMD ["python", "src/main.py"]
+# ------------------------
+CMD ["python3", "app.py"]

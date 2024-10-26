@@ -1,22 +1,27 @@
 from abc import ABC, abstractmethod
 
 class Platform(ABC):
-    def __init__(self, driver, data):
-        self._driver = driver
+    def __init__(self, browser, data):
+        self._browser = browser
+        self._driver = self._browser._driver
         self._data = data
         
     @abstractmethod
-    def _to():
+    def login():
         pass
     
     @abstractmethod
-    def _refresh():
+    def enter_credentials():
         pass
-    
+
     @abstractmethod
-    def _login():
+    def submit_form():
         pass
-    
+
     @abstractmethod
-    def _logout():
+    def check_captcha():
+        pass
+
+    @abstractmethod
+    def refresh():
         pass

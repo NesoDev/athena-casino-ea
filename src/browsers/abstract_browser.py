@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
-from src.config.settings import load_env_variable
 
-class Driver(ABC):
+class Browser(ABC):
     def __init__(self):
-        self._options = load_env_variable('DATA_DRIVERS')['options']
+        pass  
         
     @abstractmethod
     def initialize(self):
