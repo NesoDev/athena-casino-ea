@@ -15,13 +15,9 @@ class Platform(ABC):
         pass
 
     @abstractmethod
-    def submit_form():
+    def obtain_inputs():
         pass
 
     @abstractmethod
     def check_captcha():
-        pass
-
-    @abstractmethod
-    def refresh():
         pass

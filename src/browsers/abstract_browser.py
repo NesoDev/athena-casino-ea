@@ -2,12 +2,12 @@ from abc import ABC, abstractmethod
 
 class Browser(ABC):
     def __init__(self):
-        pass  
-        
+        pass
+
     @abstractmethod
     def initialize(self):
         pass
     
+    @abstractmethod
     def quit(self):
-        driver = self.driver
-        driver.quit()
+        pass
