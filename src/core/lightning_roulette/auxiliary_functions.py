@@ -15,6 +15,8 @@ def is_equal_zones(numbers: list) -> bool:
     if not numbers:
         return False
     zone = obtain_zone(int(numbers[0]))
+    if zone == 0:
+        return False
     for number in numbers[1:]:
         if obtain_zone(int(number)) != zone:
             return False    
@@ -76,11 +78,11 @@ def create_new_message(client: Mongo, db_name: str, game_id: str, strategy_id: s
 
 def obtain_color(number: int):
     reds = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
-    whites = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31,33, 35]
+    blacks = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31,33, 35]
     if number in reds:
         color = "red"
-    elif number in whites:
-        color = "white"
+    elif number in blacks:
+        color = "black"
     elif number == 0:
         color = "neutral"  
     return color

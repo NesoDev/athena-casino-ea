@@ -1,14 +1,16 @@
+from src.loggers.logger import Logger
 from src.connectors.abstract_connector import Connector
 from src.config.settings import load_env_variable
 import requests
 
 
 class Telegram(Connector):
-    def __init__(self):
+    def __init__(self, logger: Logger):
         data_telegram = load_env_variable('DATA_CONNECTORS')['telegram']
         super().__init__(data_telegram)
         self._endpoint = self._data["endpoint"]
         self._bots = self._data["bots"]
+        self._logger = logger
 
     def send_message(self, message, lang):
         endpoint = self._endpoint
@@ -19,20 +21,19 @@ class Telegram(Connector):
         params = {"chat_id": chat_id, "text": message, "parse_mode": "MarkdownV2"}
         while True:
             try:
-                res = requests.post(
-                    url, json=params, timeout=15
-                )  # Timeout de 15 segundos
-                print(f"Contenido: {res.text}")
-                res.raise_for_status()
-                #print("[TELEGRAM] Mensaje enviado correctamente.")
+                res = requests.post(url, json=params, timeout=15)
+                self._logger.log(f"Contenido: {res.text}", "DEBUG")
+                self._logger.log("Mensaje enviado correctamente.", "TELEGRAM")
                 break
             except requests.exceptions.Timeout:
-                print(
-                    "[ERROR] La solicitud a Telegram excedió el tiempo de espera. Reintentando envío..."
+                self._logger.log(
+                    "La solicitud a Telegram excedió el tiempo de espera. Reintentando envío...",
+                    "ERROR"
                 )
             except requests.exceptions.RequestException as e:
-                print(
-                    f"[ERROR] No se pudo enviar el mensaje: {e}. Reintentando envío..."
+                self._logger.log(
+                    f"No se pudo enviar el mensaje: {e}. Reintentando envío...",
+                    "ERROR"
                 )
 
     def get_updates(self):
@@ -51,8 +52,6 @@ class Telegram(Connector):
             try:
                 res = requests.post(url, json=params)
                 res.raise_for_status()
-                print("[INFO] Mensaje eliminado correctamente.")
+                self._logger.log("Mensaje eliminado correctamente.", "INFO")
             except requests.exceptions.RequestException as e:
-                print(f"[ERROR] No se pudo eliminar el mensaje: {e}")
-
-    
+                self._logger.log(f"No se pudo eliminar el mensaje: {e}", "ERROR")
