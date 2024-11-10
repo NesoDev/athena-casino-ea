@@ -23,7 +23,7 @@ class Telegram(Connector):
             try:
                 res = requests.post(url, json=params, timeout=15)
                 self._logger.log(f"Contenido: {res.text}", "DEBUG")
-                self._logger.log("Mensaje enviado correctamente.", "CLIENT")
+                self._logger.log("Mensaje enviado correctamente.", "TELEGRAM")
                 break
             except requests.exceptions.Timeout:
                 self._logger.log(

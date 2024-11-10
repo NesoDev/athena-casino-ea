@@ -5,19 +5,24 @@ resources = {
             "message_cancel_start_bets_body_1": "La estrategia",
             "message_cancel_start_bets_body_2": "no siguió un patrón\\.",
             "message_cancel_start_bets_foot": "Iniciando nuevo análisis…",
+
             "message_win_bet_head": "🎉 *¡ACIERTO\\!* 🥳💰💵🤑🔮",
             "message_win_bet_body": "💵 Resultado: Apuesta Ganada en ",
             "message_win_bet_foot": "💸 ¡Vamos por más\\! ¡Multipliquemos nuestras ganancias\\! 💰💰💰",
+
             "message_lose_bet": (
                 "❌ *Apuesta Perdida*",
                 "Resultado: Apuesta no acertada\\. Iniciando nuevo análisis…",
             ),
+
             "message_alert_bet_head": "🎲 *¡ATENCIÓN\\!* 🚨🚨",
             "message_alert_bet_body": "🎯 Analizando mesa para posible apuesta en",
             "message_alert_bet_foot": "📊 Esperando resultados… ⏳",
+
             "message_confirmed_start_bet_head": "✅ *¡CONFIRMADO\\!*",
             "message_confirmed_start_bet_body": "Apostar en",
             "message_confirmed_start_bet_foot": "🔐 Proteger el 0\\.",
+            
             "message_cases_head": "🎲 *¡ATENCIÓN\\!* 🚨",
             "message_cases_body": "se volvió a repetir\\.",
             "message_cases_foot_double": "Dobla tu apuesta anterior\\.",

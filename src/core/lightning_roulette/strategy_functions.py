@@ -1,5 +1,5 @@
 from datetime import datetime
-from src.core.lightning_roulette.auxiliary_functions import create_new_message, is_equal_colors, is_equal_group, is_equal_parity, is_equal_zones, obtain_color, obtain_datetime, obtain_group, obtain_zone, obtain_others_zones, zones_list_to_string
+from src.core.lightning_roulette.auxiliary_functions import is_equal_colors, is_equal_group, is_equal_parity, is_equal_zones, obtain_color, obtain_group, obtain_zone, obtain_others_zones, zones_list_to_string
 from src.connectors.telegram_connector import Telegram
 from src.clients.mongodb_client import Mongo
 from src.core.lightning_roulette.utils import resources
@@ -25,7 +25,7 @@ def for_zones(game_id: str, numbers: list, connector: Telegram, client: Mongo, d
                 connector.send_message(message="\n".join(message), lang=lang)
                 # logger.log(f"Enviando mensaje en {lang}: {message}", "FOR ZONES")
                 if lang == 'es': 
-                    message_document = create_new_message(client=client, db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
+                    message_document = client.create_new_message(db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
                     client.insert_document(collection_name="Messages", document=message_document)
 
     if data['check_simple_bet']:
@@ -128,7 +128,7 @@ def for_zones(game_id: str, numbers: list, connector: Telegram, client: Mongo, d
                 # logger.log(f"Enviando mensaje en {lang}: {message}", "FOR ZONES")
                 #------------------------------------------------------------------------------------------------------------------
                 if lang == 'es':
-                    message_document = create_new_message(client=client, db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
+                    message_document = client.create_new_message(db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
                     data['latest_message_id'] = client.insert_document(collection_name="Messages", document=message_document)
                     data['latest_alert_id'] = client.insert_document(collection_name="Alerts", document={"messageID": data['latest_message_id']})
         case 2:
@@ -148,7 +148,7 @@ def for_zones(game_id: str, numbers: list, connector: Telegram, client: Mongo, d
                 # logger.log(f"Enviando mensaje en {lang}: {message}", "FOR ZONES")
                 #------------------------------------------------------------------------------------------------------------------
                 if lang == 'es': 
-                    message_document = create_new_message(client=client, db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
+                    message_document = client.create_new_message(db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
                     client.insert_document(collection_name="Messages", document=message_document)
         case 3:
             logger.log("Caso 3 se cumplió, Enviando predicción.", "FOR ZONES")
@@ -167,7 +167,7 @@ def for_zones(game_id: str, numbers: list, connector: Telegram, client: Mongo, d
                 # logger.log(f"Enviando mensaje en {lang}: {message}", "FOR ZONES")
                 #------------------------------------------------------------------------------------------------------------------
                 if lang == 'es':
-                    message_document = create_new_message(client=client, db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
+                    message_document = client.create_new_message(db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
                     client.insert_document(collection_name="Messages", document=message_document)
 
     return data
@@ -190,7 +190,7 @@ def red_and_black(game_id: str, numbers: list, connector: Telegram, client: Mong
                 connector.send_message(message="\n".join(message), lang=lang)
                 # logger.log(f"Enviando mensaje en {lang}: {message}", "RED AND BLACK")
                 if lang == 'es': 
-                    message_document = create_new_message(client=client, db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
+                    message_document = client.create_new_message(db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
                     client.insert_document(collection_name="Messages", document=message_document) 
 
     if data['check_simple_bet']:
@@ -296,7 +296,7 @@ def red_and_black(game_id: str, numbers: list, connector: Telegram, client: Mong
                 # logger.log(f"Enviando mensaje en {lang}: {message}", "RED AND BLACK")
                 #------------------------------------------------------------------------------------------------------------------
                 if lang == 'es':
-                    message_document = create_new_message(client=client, db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
+                    message_document = client.create_new_message(db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
                     data['latest_message_id'] = client.insert_document(collection_name="Messages", document=message_document)
                     data['latest_alert_id'] = client.insert_document(collection_name="Alerts", document={"messageID": data['latest_message_id']})
         case 2:
@@ -314,7 +314,7 @@ def red_and_black(game_id: str, numbers: list, connector: Telegram, client: Mong
                 # logger.log(f"Enviando mensaje en {lang}: {message}", "RED AND BLACK")
                 #------------------------------------------------------------------------------------------------------------------
                 if lang == 'es':
-                    message_document = create_new_message(client=client, db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
+                    message_document = client.create_new_message(db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
                     data['latest_message_id'] = client.insert_document(collection_name="Messages", document=message_document)
                     data['latest_alert_id'] = client.insert_document(collection_name="Alerts", document={"messageID": data['latest_message_id']})
         case 3:
@@ -334,7 +334,7 @@ def red_and_black(game_id: str, numbers: list, connector: Telegram, client: Mong
                 # logger.log(f"Enviando mensaje en {lang}: {message}", "RED AND BLACK")
                 #------------------------------------------------------------------------------------------------------------------
                 if lang == 'es':
-                    message_document = create_new_message(client=client, db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
+                    message_document = client.create_new_message(db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
                     client.insert_document(collection_name="Messages", document=message_document)
     return data
 
@@ -358,7 +358,7 @@ def even_and_odd(game_id: str, numbers: list, connector: Telegram, client: Mongo
                 connector.send_message(message="\n".join(message), lang=lang)
                 # logger.log(f"Enviando mensaje en {lang}: {message}", "EVEN AND ODD")
                 if lang == 'es': 
-                    message_document = create_new_message(client=client, db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
+                    message_document = client.create_new_message(db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
                     client.insert_document(collection_name="Messages", document=message_document)
 
     if data['check_simple_bet']:
@@ -458,7 +458,7 @@ def even_and_odd(game_id: str, numbers: list, connector: Telegram, client: Mongo
                 # logger.log(f"Enviando mensaje en {lang}: {message}", "EVEN AND ODD")
                 #------------------------------------------------------------------------------------------------------------------
                 if lang == 'es':
-                    message_document = create_new_message(client=client, db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
+                    message_document = client.create_new_message(db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
                     data['latest_message_id'] = client.insert_document(collection_name="Messages", document=message_document)
                     data['latest_alert_id'] = client.insert_document(collection_name="Alerts", document={"messageID": data['latest_message_id']})
         case 2:
@@ -476,7 +476,7 @@ def even_and_odd(game_id: str, numbers: list, connector: Telegram, client: Mongo
                 # logger.log(f"Enviando mensaje en {lang}: {message}", "EVEN AND ODD")
                 #------------------------------------------------------------------------------------------------------------------
                 if lang == 'es':
-                    message_document = create_new_message(client=client, db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
+                    message_document = client.create_new_message(db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
                     data['latest_message_id'] = client.insert_document(collection_name="Messages", document=message_document)
                     data['latest_alert_id'] = client.insert_document(collection_name="Alerts", document={"messageID": data['latest_message_id']})
         case 3:
@@ -496,7 +496,7 @@ def even_and_odd(game_id: str, numbers: list, connector: Telegram, client: Mongo
                 # logger.log(f"Enviando mensaje en {lang}: {message}", "EVEN AND ODD")
                 #------------------------------------------------------------------------------------------------------------------
                 if lang == 'es':
-                    message_document = create_new_message(client=client, db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
+                    message_document = client.create_new_message(db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
                     client.insert_document(collection_name="Messages", document=message_document)
     return data
 
@@ -518,7 +518,7 @@ def two_groups(game_id: str, numbers: list, connector: Telegram, client: Mongo, 
                 connector.send_message(message="\n".join(message), lang=lang)
                 # logger.log(f"Enviando mensaje en {lang}: {message}", "TWO GROUPS")
                 if lang == 'es': 
-                    message_document = create_new_message(client=client, db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
+                    message_document = client.create_new_message(db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
                     client.insert_document(collection_name="Messages", document=message_document)
 
     if data['check_simple_bet']:
@@ -619,7 +619,7 @@ def two_groups(game_id: str, numbers: list, connector: Telegram, client: Mongo, 
                 # logger.log(f"Enviando mensaje en {lang}: {message}", "TWO GROUPS")
                 #------------------------------------------------------------------------------------------------------------------
                 if lang == 'es':
-                    message_document = create_new_message(client=client, db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
+                    message_document = client.create_new_message(db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
                     data['latest_message_id'] = client.insert_document(collection_name="Messages", document=message_document)
                     data['latest_alert_id'] = client.insert_document(collection_name="Alerts", document={"messageID": data['latest_message_id']})
         case 2:
@@ -637,7 +637,7 @@ def two_groups(game_id: str, numbers: list, connector: Telegram, client: Mongo, 
                 # logger.log(f"Enviando mensaje en {lang}: {message}", "TWO GROUPS")
                 #------------------------------------------------------------------------------------------------------------------
                 if lang == 'es':
-                    message_document = create_new_message(client=client, db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
+                    message_document = client.create_new_message(db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
                     data['latest_message_id'] = client.insert_document(collection_name="Messages", document=message_document)
                     data['latest_alert_id'] = client.insert_document(collection_name="Alerts", document={"messageID": data['latest_message_id']})
         case 3:
@@ -657,6 +657,6 @@ def two_groups(game_id: str, numbers: list, connector: Telegram, client: Mongo, 
                 # logger.log(f"Enviando mensaje en {lang}: {message}", "TWO GROUPS")
                 #------------------------------------------------------------------------------------------------------------------
                 if lang == 'es':
-                    message_document = create_new_message(client=client, db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
+                    message_document = client.create_new_message(db_name="RoobetDB", game_id=game_id, strategy_id=strategy_id, message=message)
                     client.insert_document(collection_name="Messages", document=message_document)
     return data
