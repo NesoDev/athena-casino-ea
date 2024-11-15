@@ -22,6 +22,7 @@ class Roobet(Platform):
         self._password = self._account["password"]
         self._url_games = self._data["url_games"]
         self._logger = logger
+        self.max_captcha_resolution_time = 60 #60 segundos
 
     def login(self, game_url):
         # Nos dirigimos al url login
@@ -56,14 +57,18 @@ class Roobet(Platform):
             # Verificamos la presencia de un captcha
             self._logger.log("Verificando la presencia de un captcha...", "CAPTCHA DETECTOR")
             is_resolve_captcha = None
+            captcha_start_time = time.time()
             while self._driver.current_url != "https://roobet.com/game/evolution:lightning_roulette":
-                is_active_captcha = self.check_captcha(delay_work=5, delay=0.1)
+                elapsed_time = time.time() - captcha_start_time
+                if elapsed_time > self.max_captcha_resolution_time:
+                    self._logger.log("El tiempo para resolver el captcha ha excedido el límite", "CAPTCHA DETECTOR")
+                    return False
+                is_active_captcha = self.check_captcha(delay_work=1, delay=0.1)
                 if is_active_captcha:
                     if is_resolve_captcha is None:
                         is_resolve_captcha = False
                         self._logger.log("Captcha activo", "CAPTCHA DETECTOR")
                     self._logger.log("Resolviendo...", "CAPTCHA DETECTOR")
-                    time.sleep(1) # Esperamos un segundo
                 elif self._driver.current_url == "https://roobet.com/game/evolution:lightning_roulette?modal=auth&tab=login":
                     password_input = self.obtain_input_password()
                     if password_input.get_attribute('value') == "":
